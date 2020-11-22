@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
-const { UserInputError } = require("apollo-server");
+const { UserInputError, AuthenticationError } = require("apollo-server");
+const jwt = require("jsonwebtoken");
 const { User } = require("../../models");
 
 module.exports = {
@@ -11,6 +12,52 @@ module.exports = {
 				return users;
 			} catch (error) {
 				console.log(error);
+			}
+		},
+		login: async (_, args) => {
+			const { username, password } = args;
+			let errors = {};
+			try {
+				if (username.trim() === "")
+					errors.username = "Username must not be empty";
+				if (password === "") errors.password = "Password must not be empty";
+
+				if (Object.keys(errors).length > 0) {
+					throw new UserInputError("bad input", { errors });
+				}
+
+				const user = await User.findOne({
+					where: { username },
+				});
+
+				if (!user) {
+					errors.username = "User not found";
+					throw new UserInputError("user not found", { errors });
+				}
+
+				const hashedPassword = await bcrypt.compare(password, user.password);
+
+				if (hashedPassword) {
+					errors.password = "Login faild";
+					throw new AuthenticationError("login faild", { errors });
+				}
+
+				const token = jwt.sign(
+					{
+						username,
+					},
+					process.env.JWT_SECRET,
+					{ expiresIn: "24h" }
+				);
+
+				return {
+					...user.toJSON(),
+					createdAt: user.createdAt.toISOString(),
+					token,
+				};
+			} catch (error) {
+				console.log(error);
+				throw error;
 			}
 		},
 	},
