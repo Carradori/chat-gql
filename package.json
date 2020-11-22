@@ -6,12 +6,11 @@
   "author": "Felipe Carradori <56209331+Carradori@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts",
+    "dev": "nodemon src/index.js",
     "build": "tsc"
   },
   "devDependencies": {
-    "ts-node-dev": "^1.0.0",
-    "typescript": "^4.1.2"
+    "nodemon": "^2.0.6"
   },
   "dependencies": {
     "apollo-server": "^2.19.0",
