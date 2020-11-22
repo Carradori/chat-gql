@@ -1,19 +1,15 @@
-const resolvers = {
+const { User } = require("../../models");
+
+module.exports = {
 	Query: {
-		getUsers: () => {
-			const users = [
-				{
-					username: "Felipe",
-					email: "felipe@carradori.com",
-				},
-				{
-					username: "Gerson",
-					email: "gerson@carradori.com",
-				},
-			];
-			return users;
+		getUsers: async () => {
+			try {
+				const users = await User.findAll({});
+
+				return users;
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	},
 };
-
-export default resolvers;

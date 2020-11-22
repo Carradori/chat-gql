@@ -1,8 +1,8 @@
-import { ApolloServer } from "apollo-server";
-import resolvers from "./graphql/resolvers";
-import typeDefs from "./graphql/typeDefs";
+const { ApolloServer } = require("apollo-server");
+const resolvers = require("./graphql/resolvers");
+const typeDefs = require("./graphql/typeDefs");
 
-import { sequelize } from "../models";
+const { sequelize } = require("../models");
 
 const server = new ApolloServer({
 	typeDefs,
